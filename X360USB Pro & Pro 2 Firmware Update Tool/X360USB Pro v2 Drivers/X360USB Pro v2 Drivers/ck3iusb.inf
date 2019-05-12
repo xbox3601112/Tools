@@ -1,0 +1,114 @@
+;
+;   ck3iusb.INF (for Windows 2000/XP/2003)
+;
+;   Copyright (c) 2000, Prolific Technology Inc.
+
+[version]
+signature="$Windows NT$"
+Class=Ports
+ClassGuid={4D36E978-E325-11CE-BFC1-08002BE10318}
+Provider=%Pro%
+catalogfile=ck3iusb.cat
+DriverVer=01/18/2010,2.0.13.132
+
+[SourceDisksNames]
+1=%Pro.Disk%,,,
+
+[ControlFlags]
+ExcludeFromSelect = USB\VID_11D4&PID_8339
+
+[SourceDisksFiles]
+ck3iusb.sys=1
+ck3iusb64.sys=1
+
+[DestinationDirs]
+DefaultDestDir=12
+ComPort.NT.Copy=12
+ComPort.NTAMD64.Copy=12
+
+[Manufacturer]
+%Pro%=Pro,NTAMD64
+
+
+[Pro]
+%DeviceDesc% = ComPort, USB\VID_11D4&PID_8339
+
+[Pro.NTAMD64]
+%DeviceDesc%=ComPort.NTAMD64, USB\VID_11D4&PID_8339
+
+[ComPort.NT]
+CopyFiles=ComPort.NT.Copy
+AddReg=ComPort.NT.AddReg
+
+[ComPort.NT.HW]
+AddReg=ComPort.NT.HW.AddReg
+
+[ComPort.NT.Copy]
+ck3iusb.sys
+
+[ComPort.NT.AddReg]
+HKR,,DevLoader,,*ntkern
+HKR,,NTMPDriver,,ck3iusb.sys
+HKR,,EnumPropPages32,,"MsPorts.dll,SerialPortPropPageProvider"
+
+[ComPort.NT.HW.AddReg]
+HKR,,"UpperFilters",0x00010000,"serenum"
+
+[ComPort.NT.Services]
+AddService = ck3iusb, 0x00000002, Serial_Service_Inst
+AddService = Serenum,,Serenum_Service_Inst
+
+
+[ComPort.NTAMD64]
+CopyFiles=ComPort.NTamd64.Copy
+AddReg=ComPort.NTamd64.AddReg
+
+[ComPort.NTAMD64.HW]
+AddReg=ComPort.NTamd64.HW.AddReg
+
+[ComPort.NTAMD64.Copy]
+ck3iusb64.sys
+
+[ComPort.NTAMD64.AddReg]
+HKR,,DevLoader,,*ntkern
+HKR,,NTMPDriver,,ck3iusb64.sys
+HKR,,EnumPropPages32,,"MsPorts.dll,SerialPortPropPageProvider"
+
+[ComPort.NTAMD64.HW.AddReg]
+HKR,,"UpperFilters",0x00010000,"serenum"
+
+[ComPort.NTAMD64.Services]
+AddService = ck3iusb64, 0x00000002, Serial_Service_Inst_NTamd64
+AddService = Serenum,,Serenum_Service_Inst
+
+
+[Serial_Service_Inst]
+DisplayName    = %Serial.SVCDESC%
+ServiceType    = 1               ; SERVICE_KERNEL_DRIVER
+StartType      = 3               ; SERVICE_SYSTEM_START (this driver may do detection)
+ErrorControl   = 1               ; SERVICE_ERROR_IGNORE
+ServiceBinary  = %12%\ck3iusb.sys
+LoadOrderGroup = Base
+
+[Serial_Service_Inst_NTamd64]
+DisplayName    = %Serial.SVCDESC%
+ServiceType    = 1               ; SERVICE_KERNEL_DRIVER
+StartType      = 3               ; SERVICE_SYSTEM_START (this driver may do detection)
+ErrorControl   = 1               ; SERVICE_ERROR_IGNORE
+ServiceBinary  = %12%\ck3iusb64.sys
+LoadOrderGroup = Base
+
+[Serenum_Service_Inst]
+DisplayName    = %Serenum.SVCDESC%
+ServiceType    = 1               ; SERVICE_KERNEL_DRIVER
+StartType      = 3               ; SERVICE_DEMAND_START
+ErrorControl   = 1               ; SERVICE_ERROR_NORMAL
+ServiceBinary  = %12%\serenum.sys
+LoadOrderGroup = PNP Filter
+
+[Strings]
+Pro = "Xecuter"
+Pro.Disk="USB-Serial Cable Diskette"
+DeviceDesc = "Xecuter CK3i USB Controller"
+Serial.SVCDESC   = "XECUTER CK3i USB Controller Driver"
+Serenum.SVCDESC = "Serenum Filter Driver"
